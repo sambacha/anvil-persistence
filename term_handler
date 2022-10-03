@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+set -e
+
+# SIGTERM-handler
+term_handler() {
+  if [ $pid -ne 0 ]; then
+    kill -SIGTERM "$pid"
+    wait "$pid"
+  fi
+  exit 143; # 128 + 15 -- SIGTERM
+}
+
+trap 'kill ${!}; term_handler' SIGTERM
+pid=0
+conf_file=/usr/local/etc/.foundry/anvil.json
+cache_dir=/opt/foundry/cache
+flags='--no-cors'
+frequency=$((UPDATEE_FREQUENCY * 60 * 60))
+
+while true; do
+    echo "# ANVIL: Running Anvil"
+    /usr/bin/anvil -d "$database_dir" -f "$conf_file" $flags
+    if [ "$frequency" -eq 0 ]; then
+        break
+    fi
+
+    echo "# ANVIL: Sleeping for $UPDATE_FREQUENCY hours"
+    sleep "$frequency" &
+    pid=$!
+    wait $!
+done
