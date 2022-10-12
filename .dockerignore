@@ -1,0 +1,7 @@
+.git/
+.github/
+/vendor
+/out
+/app
+Dockerfile
+docker-compose.yml
