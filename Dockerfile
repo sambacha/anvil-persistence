@@ -1,6 +1,5 @@
 # syntax=docker/dockerfile:1
-
-FROM golang:1.19-bullseye
+FROM golang:1.19-bullseye-slim
 ARG VERSION="local"
 ARG REVISION="none"
 ARG GITHUB_WORKFLOW="none"
@@ -23,7 +22,7 @@ RUN /root/.foundry/bin/foundryup
 
 WORKDIR /app
 
-RUN mkdir -p /app/data
+RUN mkdir -p /app/data && mkdir -p /opt/foundry/cache
 
 ONBUILD ARG GONOPROXY
 ONBUILD ARG GONOSUMDB
@@ -48,7 +47,7 @@ EXPOSE 3001/tcp
 STOPSIGNAL SIGQUIT
 
 CMD [ "/anvil-persistence", "-command=/root/.foundry/bin/anvil", "-file=data/anvil_state.txt", "-host=0.0.0.0" ]
-#ENTRYPOINT ["/bin/bash", "-c", "/usr/bin/env \"$@\"", "--"]
+
 
 LABEL org.opencontainers.image.url==${URL}
 LABEL org.opencontainers.image.documentation=${URL}
