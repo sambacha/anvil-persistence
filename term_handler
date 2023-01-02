@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-
-set -e
+shopt -s globstar
+set -eu
 
 # SIGTERM-handler
 term_handler() {
